@@ -1,4 +1,4 @@
-package se.magnus.microservices.core.composite.product.services;
+package se.magnus.microservices.composite.product.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

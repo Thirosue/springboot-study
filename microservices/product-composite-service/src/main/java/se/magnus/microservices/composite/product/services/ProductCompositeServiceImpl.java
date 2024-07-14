@@ -1,4 +1,4 @@
-package se.magnus.microservices.core.composite.product.services;
+package se.magnus.microservices.composite.product.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;

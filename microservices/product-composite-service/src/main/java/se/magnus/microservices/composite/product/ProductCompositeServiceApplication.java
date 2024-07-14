@@ -1,4 +1,4 @@
-package se.magnus.microservices.core.composite.product;
+package se.magnus.microservices.composite.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
