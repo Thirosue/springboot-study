@@ -71,6 +71,11 @@ public class ProductCompositeIntegration implements ProductService, ReviewServic
     }
 
     @Override
+    public Product createProduct(Product body) {
+        return null;
+    }
+
+    @Override
     public Product getProduct(int productId) {
         try {
             String url = productServiceUrl + productId;
@@ -99,6 +104,16 @@ public class ProductCompositeIntegration implements ProductService, ReviewServic
     }
 
     @Override
+    public void deleteProduct(int productId) {
+
+    }
+
+    @Override
+    public Recommendation createRecommendation(Recommendation body) {
+        return null;
+    }
+
+    @Override
     public List<Recommendation> getRecommendations(int productId) {
         try {
             String url = recommendationServiceUrl + productId;
@@ -118,6 +133,16 @@ public class ProductCompositeIntegration implements ProductService, ReviewServic
     }
 
     @Override
+    public void deleteRecommendations(int productId) {
+
+    }
+
+    @Override
+    public Review createReview(Review body) {
+        return null;
+    }
+
+    @Override
     public List<Review> getReviews(int productId) {
         try {
             String url = reviewServiceUrl + productId;
@@ -133,5 +158,10 @@ public class ProductCompositeIntegration implements ProductService, ReviewServic
             LOG.warn("Got an exception while requesting reviews, return zero reviews: {}", ex.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public void deleteReviews(int productId) {
+
     }
 }
