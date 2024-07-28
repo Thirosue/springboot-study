@@ -4,11 +4,13 @@ spring.data.mongodb:
   host: localhost
   port: 27017
   database: product-db
+  auto-index-creation: true
 
 logging:
   level:
     root: INFO
     se.magnus.microservices: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 
 ---
 spring.config.activate.on-profile: docker
