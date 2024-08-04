@@ -1,9 +1,13 @@
 package se.magnus.api.composite.product;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 public interface ProductCompositeService {
+
+  @PostMapping(
+          value    = "/product-composite",
+          consumes = "application/json")
+  void createProduct(@RequestBody ProductAggregate body);
 
   /**
    * Sample usage: "curl $HOST:$PORT/product-composite/1".
@@ -15,4 +19,7 @@ public interface ProductCompositeService {
     value = "/product-composite/{productId}",
     produces = "application/json")
   ProductAggregate getProduct(@PathVariable int productId);
+
+  @DeleteMapping(value = "/product-composite/{productId}")
+  void deleteProduct(@PathVariable int productId);
 }
