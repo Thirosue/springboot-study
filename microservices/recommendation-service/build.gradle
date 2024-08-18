@@ -25,6 +25,7 @@ repositories {
 spotless {
 	java {
 		googleJavaFormat()
+		removeUnusedImports()
 	}
 }
 
