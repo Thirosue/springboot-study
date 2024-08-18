@@ -22,8 +22,7 @@ import se.magnus.microservices.core.product.persistence.ProductRepository;
 @DataMongoTest
 class PersistenceTests extends MongoDbTestBase {
 
-  @Autowired
-  private ProductRepository repository;
+  @Autowired private ProductRepository repository;
 
   private ProductEntity savedEntity;
 
@@ -55,7 +54,7 @@ class PersistenceTests extends MongoDbTestBase {
     repository.save(savedEntity);
 
     ProductEntity foundEntity = repository.findById(savedEntity.getId()).get();
-    assertEquals(1, (long)foundEntity.getVersion());
+    assertEquals(1, (long) foundEntity.getVersion());
     assertEquals("n2", foundEntity.getName());
   }
 
@@ -75,10 +74,12 @@ class PersistenceTests extends MongoDbTestBase {
 
   @Test
   void duplicateError() {
-    assertThrows(DuplicateKeyException.class, () -> {
-      ProductEntity entity = new ProductEntity(savedEntity.getProductId(), "n", 1);
-      repository.save(entity);
-    });
+    assertThrows(
+        DuplicateKeyException.class,
+        () -> {
+          ProductEntity entity = new ProductEntity(savedEntity.getProductId(), "n", 1);
+          repository.save(entity);
+        });
   }
 
   @Test
@@ -93,15 +94,18 @@ class PersistenceTests extends MongoDbTestBase {
     repository.save(entity1);
 
     // Update the entity using the second entity object.
-    // This should fail since the second entity now holds an old version number, i.e. an Optimistic Lock Error
-    assertThrows(OptimisticLockingFailureException.class, () -> {
-      entity2.setName("n2");
-      repository.save(entity2);
-    }); 
+    // This should fail since the second entity now holds an old version number, i.e. an Optimistic
+    // Lock Error
+    assertThrows(
+        OptimisticLockingFailureException.class,
+        () -> {
+          entity2.setName("n2");
+          repository.save(entity2);
+        });
 
     // Get the updated entity from the database and verify its new sate
     ProductEntity updatedEntity = repository.findById(savedEntity.getId()).get();
-    assertEquals(1, (int)updatedEntity.getVersion());
+    assertEquals(1, (int) updatedEntity.getVersion());
     assertEquals("n1", updatedEntity.getName());
   }
 
@@ -110,9 +114,10 @@ class PersistenceTests extends MongoDbTestBase {
 
     repository.deleteAll();
 
-    List<ProductEntity> newProducts = rangeClosed(1001, 1010)
-      .mapToObj(i -> new ProductEntity(i, "name " + i, i))
-      .collect(Collectors.toList());
+    List<ProductEntity> newProducts =
+        rangeClosed(1001, 1010)
+            .mapToObj(i -> new ProductEntity(i, "name " + i, i))
+            .collect(Collectors.toList());
     repository.saveAll(newProducts);
 
     Pageable nextPage = PageRequest.of(0, 4, ASC, "productId");
@@ -121,18 +126,24 @@ class PersistenceTests extends MongoDbTestBase {
     nextPage = testNextPage(nextPage, "[1009, 1010]", false);
   }
 
-  private Pageable testNextPage(Pageable nextPage, String expectedProductIds, boolean expectsNextPage) {
+  private Pageable testNextPage(
+      Pageable nextPage, String expectedProductIds, boolean expectsNextPage) {
     Page<ProductEntity> productPage = repository.findAll(nextPage);
-    assertEquals(expectedProductIds, productPage.getContent().stream().map(p -> p.getProductId()).collect(Collectors.toList()).toString());
+    assertEquals(
+        expectedProductIds,
+        productPage.getContent().stream()
+            .map(p -> p.getProductId())
+            .collect(Collectors.toList())
+            .toString());
     assertEquals(expectsNextPage, productPage.hasNext());
     return productPage.nextPageable();
   }
 
   private void assertEqualsProduct(ProductEntity expectedEntity, ProductEntity actualEntity) {
-    assertEquals(expectedEntity.getId(),               actualEntity.getId());
-    assertEquals(expectedEntity.getVersion(),          actualEntity.getVersion());
-    assertEquals(expectedEntity.getProductId(),        actualEntity.getProductId());
-    assertEquals(expectedEntity.getName(),           actualEntity.getName());
-    assertEquals(expectedEntity.getWeight(),           actualEntity.getWeight());
+    assertEquals(expectedEntity.getId(), actualEntity.getId());
+    assertEquals(expectedEntity.getVersion(), actualEntity.getVersion());
+    assertEquals(expectedEntity.getProductId(), actualEntity.getProductId());
+    assertEquals(expectedEntity.getName(), actualEntity.getName());
+    assertEquals(expectedEntity.getWeight(), actualEntity.getWeight());
   }
 }

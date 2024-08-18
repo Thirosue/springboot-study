@@ -3,14 +3,16 @@ package se.magnus.microservices.core.review.persistence;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "reviews", indexes = { @Index(name = "reviews_unique_idx", unique = true, columnList = "productId,reviewId") })
+@Table(
+    name = "reviews",
+    indexes = {
+      @Index(name = "reviews_unique_idx", unique = true, columnList = "productId,reviewId")
+    })
 public class ReviewEntity {
 
-  @Id @GeneratedValue
-  private int id;
+  @Id @GeneratedValue private int id;
 
-  @Version
-  private int version;
+  @Version private int version;
 
   private int productId;
   private int reviewId;
@@ -18,8 +20,7 @@ public class ReviewEntity {
   private String subject;
   private String content;
 
-  public ReviewEntity() {
-  }
+  public ReviewEntity() {}
 
   public ReviewEntity(int productId, int reviewId, String author, String subject, String content) {
     this.productId = productId;

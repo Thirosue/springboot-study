@@ -30,8 +30,8 @@ class MapperTests {
 
     assertEquals(api.getProductId(), api2.getProductId());
     assertEquals(api.getProductId(), api2.getProductId());
-    assertEquals(api.getName(),      api2.getName());
-    assertEquals(api.getWeight(),    api2.getWeight());
+    assertEquals(api.getName(), api2.getName());
+    assertEquals(api.getWeight(), api2.getWeight());
     assertNull(api2.getServiceAddress());
   }
 }

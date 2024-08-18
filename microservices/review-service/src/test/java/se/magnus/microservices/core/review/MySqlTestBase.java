@@ -8,7 +8,8 @@ import org.testcontainers.containers.MySQLContainer;
 public abstract class MySqlTestBase {
 
   // Extend startup timeout since a MySQLContainer with MySQL 8 starts very slow on Win10/WSL2
-  private static JdbcDatabaseContainer database = new MySQLContainer("mysql:8.0.32").withStartupTimeoutSeconds(300);
+  private static JdbcDatabaseContainer database =
+      new MySQLContainer("mysql:8.0.32").withStartupTimeoutSeconds(300);
 
   static {
     database.start();
@@ -20,5 +21,4 @@ public abstract class MySqlTestBase {
     registry.add("spring.datasource.username", database::getUsername);
     registry.add("spring.datasource.password", database::getPassword);
   }
-
 }

@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.4'
 	id 'io.spring.dependency-management' version '1.1.5'
+	id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'se.magnus.microservices.core.review'
@@ -19,6 +20,12 @@ java {
 
 repositories {
 	mavenCentral()
+}
+
+spotless {
+	java {
+		googleJavaFormat()
+	}
 }
 
 jar {
@@ -52,3 +59,5 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+compileJava.dependsOn "spotlessApply"

@@ -17,8 +17,7 @@ import se.magnus.microservices.core.recommendation.persistence.RecommendationRep
 @DataMongoTest
 class PersistenceTests extends MongoDbTestBase {
 
-  @Autowired
-  private RecommendationRepository repository;
+  @Autowired private RecommendationRepository repository;
 
   private RecommendationEntity savedEntity;
 
@@ -31,7 +30,6 @@ class PersistenceTests extends MongoDbTestBase {
 
     assertEqualsRecommendation(entity, savedEntity);
   }
-
 
   @Test
   void create() {
@@ -51,7 +49,7 @@ class PersistenceTests extends MongoDbTestBase {
     repository.save(savedEntity);
 
     RecommendationEntity foundEntity = repository.findById(savedEntity.getId()).get();
-    assertEquals(1, (long)foundEntity.getVersion());
+    assertEquals(1, (long) foundEntity.getVersion());
     assertEquals("a2", foundEntity.getAuthor());
   }
 
@@ -71,10 +69,12 @@ class PersistenceTests extends MongoDbTestBase {
 
   @Test
   void duplicateError() {
-    assertThrows(DuplicateKeyException.class, () -> {
-      RecommendationEntity entity = new RecommendationEntity(1, 2, "a", 3, "c");
-      repository.save(entity);
-    });
+    assertThrows(
+        DuplicateKeyException.class,
+        () -> {
+          RecommendationEntity entity = new RecommendationEntity(1, 2, "a", 3, "c");
+          repository.save(entity);
+        });
   }
 
   @Test
@@ -89,25 +89,29 @@ class PersistenceTests extends MongoDbTestBase {
     repository.save(entity1);
 
     //  Update the entity using the second entity object.
-    // This should fail since the second entity now holds an old version number, i.e. an Optimistic Lock Error
-    assertThrows(OptimisticLockingFailureException.class, () -> {
-      entity2.setAuthor("a2");
-      repository.save(entity2);
-    });
+    // This should fail since the second entity now holds an old version number, i.e. an Optimistic
+    // Lock Error
+    assertThrows(
+        OptimisticLockingFailureException.class,
+        () -> {
+          entity2.setAuthor("a2");
+          repository.save(entity2);
+        });
 
     // Get the updated entity from the database and verify its new sate
     RecommendationEntity updatedEntity = repository.findById(savedEntity.getId()).get();
-    assertEquals(1, (int)updatedEntity.getVersion());
+    assertEquals(1, (int) updatedEntity.getVersion());
     assertEquals("a1", updatedEntity.getAuthor());
   }
 
-  private void assertEqualsRecommendation(RecommendationEntity expectedEntity, RecommendationEntity actualEntity) {
-    assertEquals(expectedEntity.getId(),               actualEntity.getId());
-    assertEquals(expectedEntity.getVersion(),          actualEntity.getVersion());
-    assertEquals(expectedEntity.getProductId(),        actualEntity.getProductId());
+  private void assertEqualsRecommendation(
+      RecommendationEntity expectedEntity, RecommendationEntity actualEntity) {
+    assertEquals(expectedEntity.getId(), actualEntity.getId());
+    assertEquals(expectedEntity.getVersion(), actualEntity.getVersion());
+    assertEquals(expectedEntity.getProductId(), actualEntity.getProductId());
     assertEquals(expectedEntity.getRecommendationId(), actualEntity.getRecommendationId());
-    assertEquals(expectedEntity.getAuthor(),           actualEntity.getAuthor());
-    assertEquals(expectedEntity.getRating(),           actualEntity.getRating());
-    assertEquals(expectedEntity.getContent(),          actualEntity.getContent());
+    assertEquals(expectedEntity.getAuthor(), actualEntity.getAuthor());
+    assertEquals(expectedEntity.getRating(), actualEntity.getRating());
+    assertEquals(expectedEntity.getContent(), actualEntity.getContent());
   }
 }

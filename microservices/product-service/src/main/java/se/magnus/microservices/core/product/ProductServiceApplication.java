@@ -11,17 +11,13 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("se.magnus")
 public class ProductServiceApplication {
 
-	private static final Logger LOG =
-			LoggerFactory.getLogger(ProductServiceApplication.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ProductServiceApplication.class);
 
-	public static void main(String[] args) {
-		ConfigurableApplicationContext ctx =
-				SpringApplication.run(ProductServiceApplication.class, args);
-		String mongodDbHost =
-				ctx.getEnvironment().getProperty("spring.data.mongodb.host");
-		String mongodDbPort =
-				ctx.getEnvironment().getProperty("spring.data.mongodb.port");
-		LOG.info("Connected to MongoDb: " + mongodDbHost + ":" +
-				mongodDbPort);
-	}
+  public static void main(String[] args) {
+    ConfigurableApplicationContext ctx =
+        SpringApplication.run(ProductServiceApplication.class, args);
+    String mongodDbHost = ctx.getEnvironment().getProperty("spring.data.mongodb.host");
+    String mongodDbPort = ctx.getEnvironment().getProperty("spring.data.mongodb.port");
+    LOG.info("Connected to MongoDb: " + mongodDbHost + ":" + mongodDbPort);
+  }
 }
