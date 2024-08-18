@@ -69,7 +69,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
   @Override
   public ProductAggregate getProduct(int productId) {
-    Product product = integration.getProduct(productId);
+    Product product = integration.getProduct(productId).block();
     List<Recommendation> recommendations = integration.getRecommendations(productId);
     List<Review> reviews = integration.getReviews(productId);
 

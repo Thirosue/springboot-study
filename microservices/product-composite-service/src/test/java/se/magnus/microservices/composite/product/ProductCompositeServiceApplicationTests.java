@@ -36,7 +36,7 @@ class ProductCompositeServiceApplicationTests {
 
   @BeforeEach
   void setUp() {
-    when(compositeIntegration.getProduct(PRODUCT_ID_OK))
+    when(compositeIntegration.getProduct(PRODUCT_ID_OK).block())
         .thenReturn(new Product(PRODUCT_ID_OK, "name", 1, "mock-address"));
     when(compositeIntegration.getRecommendations(PRODUCT_ID_OK))
         .thenReturn(

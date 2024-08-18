@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import reactor.core.publisher.Mono;
 import se.magnus.api.core.product.Product;
 import se.magnus.api.core.product.ProductService;
 import se.magnus.api.core.recommendation.Recommendation;
@@ -57,16 +58,16 @@ public class ProductCompositeIntegration
   }
 
   @Override
-  public Product createProduct(Product body) {
+  public Mono<Product> createProduct(Product body) {
     try {
-      return restTemplate.postForObject(productServiceUrl, body, Product.class);
+      return Mono.just(restTemplate.postForObject(productServiceUrl, body, Product.class));
     } catch (HttpClientErrorException ex) {
       throw handleHttpClientException(ex);
     }
   }
 
   @Override
-  public Product getProduct(int productId) {
+  public Mono<Product> getProduct(int productId) {
     try {
       String url = productServiceUrl + "/" + productId;
       LOG.debug("Will call getProduct API on URL: {}", url);
@@ -75,7 +76,7 @@ public class ProductCompositeIntegration
       assert product != null;
       LOG.debug("Found a product with id: {}", product.getProductId());
 
-      return product;
+      return Mono.just(product);
 
     } catch (HttpClientErrorException ex) {
       throw handleHttpClientException(ex);
@@ -83,9 +84,10 @@ public class ProductCompositeIntegration
   }
 
   @Override
-  public void deleteProduct(int productId) {
+  public Mono<Void> deleteProduct(int productId) {
     try {
       restTemplate.delete(productServiceUrl + "/" + productId);
+      return Mono.empty();
     } catch (HttpClientErrorException ex) {
       throw handleHttpClientException(ex);
     }

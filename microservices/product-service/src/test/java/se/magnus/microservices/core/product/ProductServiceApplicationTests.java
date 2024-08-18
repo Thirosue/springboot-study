@@ -1,7 +1,6 @@
 package se.magnus.microservices.core.product;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -33,9 +32,12 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     int productId = 1;
 
+    assertEquals(0, repository.count().block());
+
     postAndVerifyProduct(productId, OK);
 
     assertTrue(repository.findByProductId(productId).blockOptional().isPresent());
+    assertEquals(1, repository.count().block());
 
     getAndVerifyProduct(productId, OK).jsonPath("$.productId").isEqualTo(productId);
   }
@@ -61,11 +63,15 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     int productId = 1;
 
+    assertEquals(0, repository.count().block());
     postAndVerifyProduct(productId, OK);
+
     assertTrue(repository.findByProductId(productId).blockOptional().isPresent());
+    assertEquals(1, repository.count().block());
 
     deleteAndVerifyProduct(productId, OK);
     assertFalse(repository.findByProductId(productId).blockOptional().isPresent());
+    assertEquals(0, repository.count().block());
 
     deleteAndVerifyProduct(productId, OK);
   }
