@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
   public Product createProduct(Product body) {
     try {
       ProductEntity entity = mapper.apiToEntity(body);
-      ProductEntity newEntity = repository.save(entity);
+      ProductEntity newEntity = repository.save(entity).block();
       return mapper.entityToApi(newEntity);
     } catch (DuplicateKeyException dke) {
       throw new InvalidInputException("Duplicate key, Product Id: " + body.getProductId());
@@ -46,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
     ProductEntity entity =
         repository
             .findByProductId(productId)
+            .blockOptional()
             .orElseThrow(
                 () -> new NotFoundException("No product found for productId: " + productId));
     Product response = mapper.entityToApi(entity);
@@ -55,6 +56,6 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public void deleteProduct(int productId) {
-    repository.findByProductId(productId).ifPresent(repository::delete);
+    repository.findByProductId(productId).blockOptional().ifPresent(repository::delete);
   }
 }
