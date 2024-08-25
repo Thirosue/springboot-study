@@ -35,7 +35,7 @@ public class RecommendationServiceImpl implements RecommendationService {
   public Recommendation createRecommendation(Recommendation body) {
     try {
       RecommendationEntity entity = mapper.apiToEntity(body);
-      RecommendationEntity newEntity = repository.save(entity);
+      RecommendationEntity newEntity = repository.save(entity).block();
 
       LOG.debug(
           "createRecommendation: created a recommendation entity: {}/{}",
@@ -59,7 +59,8 @@ public class RecommendationServiceImpl implements RecommendationService {
       throw new InvalidInputException("Invalid productId: " + productId);
     }
 
-    List<RecommendationEntity> entityList = repository.findByProductId(productId);
+    List<RecommendationEntity> entityList =
+        repository.findByProductId(productId).toStream().toList();
     List<Recommendation> list = mapper.entityListToApiList(entityList);
     list.forEach(e -> e.setServiceAddress(serviceUtil.getServiceAddress()));
 
@@ -73,6 +74,6 @@ public class RecommendationServiceImpl implements RecommendationService {
     LOG.debug(
         "deleteRecommendations: tries to delete recommendations for the product with productId: {}",
         productId);
-    repository.deleteAll(repository.findByProductId(productId));
+    repository.deleteAll(repository.findByProductId(productId).toStream().toList()).block();
   }
 }
