@@ -1,5 +1,7 @@
 package se.magnus.microservices.core.review;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,11 @@ public class ReviewServiceApplication {
 
   private final Integer threadPoolSize;
   private final Integer taskQueueSize;
+
+  @Bean
+  public OpenAPI getOpenApiDocumentation() {
+    return new OpenAPI().info(new Info().title("review").version("v1"));
+  }
 
   @Autowired
   public ReviewServiceApplication(
