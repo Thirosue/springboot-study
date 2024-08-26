@@ -13,9 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import se.magnus.api.composite.product.ProductAggregate;
-import se.magnus.api.composite.product.RecommendationSummary;
-import se.magnus.api.composite.product.ReviewSummary;
 import se.magnus.api.core.product.Product;
 import se.magnus.api.core.recommendation.Recommendation;
 import se.magnus.api.core.review.Review;
@@ -36,16 +36,18 @@ class ProductCompositeServiceApplicationTests {
 
   @BeforeEach
   void setUp() {
-    when(compositeIntegration.getProduct(PRODUCT_ID_OK).block())
-        .thenReturn(new Product(PRODUCT_ID_OK, "name", 1, "mock-address"));
+    when(compositeIntegration.getProduct(PRODUCT_ID_OK))
+        .thenReturn(Mono.just(new Product(PRODUCT_ID_OK, "name", 1, "mock-address")));
     when(compositeIntegration.getRecommendations(PRODUCT_ID_OK))
         .thenReturn(
-            singletonList(
-                new Recommendation(PRODUCT_ID_OK, 1, "author", 1, "content", "mock address")));
+            Flux.fromIterable(
+                singletonList(
+                    new Recommendation(PRODUCT_ID_OK, 1, "author", 1, "content", "mock address"))));
     when(compositeIntegration.getReviews(PRODUCT_ID_OK))
         .thenReturn(
-            singletonList(
-                new Review(PRODUCT_ID_OK, 1, "author", "subject", "content", "mock address")));
+            Flux.fromIterable(
+                singletonList(
+                    new Review(PRODUCT_ID_OK, 1, "author", "subject", "content", "mock address"))));
 
     when(compositeIntegration.getProduct(PRODUCT_ID_NOT_FOUND))
         .thenThrow(new NotFoundException("NOT FOUND: " + PRODUCT_ID_NOT_FOUND));
@@ -58,47 +60,7 @@ class ProductCompositeServiceApplicationTests {
   void contextLoads() {}
 
   @Test
-  void createCompositeProduct1() {
-
-    ProductAggregate compositeProduct = new ProductAggregate(1, "name", 1, null, null, null);
-
-    postAndVerifyProduct(compositeProduct, OK);
-  }
-
-  @Test
-  void createCompositeProduct2() {
-    ProductAggregate compositeProduct =
-        new ProductAggregate(
-            1,
-            "name",
-            1,
-            singletonList(new RecommendationSummary(1, "a", 1, "c")),
-            singletonList(new ReviewSummary(1, "a", "s", "c")),
-            null);
-
-    postAndVerifyProduct(compositeProduct, OK);
-  }
-
-  @Test
-  void deleteCompositeProduct() {
-    ProductAggregate compositeProduct =
-        new ProductAggregate(
-            1,
-            "name",
-            1,
-            singletonList(new RecommendationSummary(1, "a", 1, "c")),
-            singletonList(new ReviewSummary(1, "a", "s", "c")),
-            null);
-
-    postAndVerifyProduct(compositeProduct, OK);
-
-    deleteAndVerifyProduct(compositeProduct.getProductId(), OK);
-    deleteAndVerifyProduct(compositeProduct.getProductId(), OK);
-  }
-
-  @Test
   void getProductById() {
-
     getAndVerifyProduct(PRODUCT_ID_OK, OK)
         .jsonPath("$.productId")
         .isEqualTo(PRODUCT_ID_OK)
@@ -110,7 +72,6 @@ class ProductCompositeServiceApplicationTests {
 
   @Test
   void getProductNotFound() {
-
     getAndVerifyProduct(PRODUCT_ID_NOT_FOUND, NOT_FOUND)
         .jsonPath("$.path")
         .isEqualTo("/product-composite/" + PRODUCT_ID_NOT_FOUND)

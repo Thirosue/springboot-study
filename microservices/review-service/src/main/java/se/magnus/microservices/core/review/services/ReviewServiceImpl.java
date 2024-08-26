@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -32,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
 
   @Autowired
   public ReviewServiceImpl(
-      Scheduler jobScheduler,
+      @Qualifier("jdbcScheduler") Scheduler jobScheduler,
       ReviewRepository repository,
       ReviewMapper mapper,
       ServiceUtil serviceUtil) {
